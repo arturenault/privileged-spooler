@@ -1,6 +1,7 @@
 #include "spooler.h"
 
 using namespace std;
+using namespace boost::filesystem;
 
 int error(const string& message) {
   if (errno != 0) {
@@ -10,14 +11,9 @@ int error(const string& message) {
   return 1;
 }
 
-bool exists(const std::string& filename) {
-  struct stat buf;
-  return (stat(filename.c_str(), &buf) == 0);
-}
-
 /* Add a series of files to the spooler */
 int AddQueue(int uid, const vector<string>& files) {
-  if (!exists(ROOT_DIR)) {
+  if (!exists(path(ROOT_DIR))) {
     mkdir(ROOT_DIR, 700);
   }
 
@@ -28,11 +24,42 @@ int AddQueue(int uid, const vector<string>& files) {
   return 0;
 }
 
+int ShowQueue() {
+  path root_dir(ROOT_DIR);
+
+  if (!exists(root_dir)) return 0;
+
+  directory_iterator end_iter;
+
+  for (directory_iterator iter(root_dir); iter != end_iter; ++iter) {
+    path filepath = iter->path();
+    if(filepath.filename() != UNIQUE_ID_FILE) {
+      stringstream filename(filepath.filename().string());
+      string user_id;
+      string unique_id;
+
+      getline(filename, user_id, '-');
+      getline(filename, unique_id);
+
+      time_t last_modified_time = last_write_time(filepath);
+      string last_modified_string(ctime(&last_modified_time));
+      int pos = last_modified_string.find_last_not_of("\n") + 1;
+      last_modified_string.erase(pos);
+
+      cout << filepath.filename().string()  << '\t';
+      cout << user_id                       << '\t';
+      cout << last_modified_string          << '\t';
+      cout << unique_id                     << endl;
+    }
+  }
+  return 0;
+}
+
 /* Get a unique ID for the next added file to use;
  * Needs to be stored in a file in the spooler directory so it can be kept
  * across executions */ 
 int GetUniqueId() {
-  ifstream unique_id_infile(ROOT_DIR "/last_unique_id", ios::binary);
+  ifstream unique_id_infile(ROOT_DIR "/" UNIQUE_ID_FILE, ios::binary);
   
   int last_unique_id, unique_id;
 

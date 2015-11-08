@@ -10,5 +10,5 @@ int main(int argc, char** argv) {
   /* Build vector with filenames */
   vector<string> files(argv + 1, argv + argc);
 
-  AddQueue(uid, files);
+  return AddQueue(uid, files);
 }

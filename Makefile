@@ -5,19 +5,24 @@ CXX			= clang++
 CC			= clang++
 CXXFLAGS	= -g -Wall --std=c++11 $(INCLUDES)
 LDFLAGS		= -g
+LDLIBS		= -lboost_system -lboost_filesystem 
 SRC_FILES = $(shell find . -type f \( -name "*.cc" -or -name "*.h" \))
 
-build: add_queue
+build: addqueue showqueue
 
-add_queue: add_queue.o spooler.o
+addqueue: addqueue.o spooler.o
 
-add_queue.o: add_queue.cc spooler.h
+showqueue: showqueue.o spooler.o
+
+addqueue.o: addqueue.cc spooler.h
+
+shoqueue.o: showqueue.cc spooler.h
 
 spooler.o: spooler.cc spooler.h
 
 .PHONY: clean
 clean:
-	rm -f *.o add_queue
+	rm -f *.o addqueue showqueue
 
 .PHONY: format
 format:
