@@ -1,5 +1,5 @@
 .PHONY: default
-default: install
+default: build
 
 CXX			= clang++
 CC			= clang++
@@ -17,9 +17,9 @@ ifneq ($(USER_ID), 0)
 	$(error Please run as root)
 endif
 
-build: check addqueue showqueue rmqueue
+compile: check addqueue showqueue rmqueue
 	
-install: build
+build: compile
 	chmod u+s addqueue showqueue rmqueue
 	mv addqueue /usr/local/bin
 	mv showqueue /usr/local/bin
@@ -33,7 +33,7 @@ rmqueue: rmqueue.o spooler.o
 
 .PHONY: clean
 clean: check
-	rm -rf *.o /usr/local/bin/addqueue /usr/local/bin/showqueue /usr/local/bin/rmqueue $(ROOT_DIR)
+	rm -rf *.o addqueue showqueue rmqueue /usr/local/bin/addqueue /usr/local/bin/showqueue /usr/local/bin/rmqueue $(ROOT_DIR)
 
 .PHONY: format
 format:

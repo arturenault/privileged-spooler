@@ -3,7 +3,7 @@
 int main(int argc, char** argv) {
   if (argc < 2) {
     stringstream stream;
-    stream << "usage: " << argv[0] << " filename1 filename2 ...";
+    stream << "usage: " << argv[0] << " unique_id1 unique_id2 ...";
     return error(stream.str());
   }
 
