@@ -28,7 +28,8 @@ int AddQueue(int uid, const vector<string>& files) {
 /* Add a single file by the given user to the spool */
 int AddFile(int uid, const string& filename) {
   int unique_id = GetUniqueId();
-  string internal_filename = ROOT_DIR "/" + to_string(uid) + "-" + to_string(unique_id);
+  string internal_filename =
+      ROOT_DIR "/" + to_string(uid) + "-" + to_string(unique_id);
 
   ifstream external_file(filename);
   if (external_file.fail()) {
@@ -90,8 +91,8 @@ int ShowQueue() {
       getline(filename, unique_id);
 
       time_t last_modified_time = last_write_time(filepath);
-	string last_modified_string(ctime(&last_modified_time));
-	int pos = last_modified_string.find_last_not_of("\n") + 1;
+      string last_modified_string(ctime(&last_modified_time));
+      int pos = last_modified_string.find_last_not_of("\n") + 1;
       last_modified_string.erase(pos);
 
       cout << filepath.filename().string() << '\t';

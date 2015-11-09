@@ -1,0 +1,24 @@
+VM_ADDRESS:sec-vm56.cs.columbia.edu
+USER_SUDO:tinyvm
+PASS_SUDO:353bb71f6
+
+USER_SPOOLER:root
+PASS_SPOOLER:353bb71f6
+
+USER:user01
+PASS:301edaac
+
+USER:user02
+PASS:2672475c
+
+USER:user03
+PASS:4deafe3b
+
+SETUID(1)/MESSAGE_PASSING(2) OPTION:1
+
+SOURCE_CODE_PATH:/home/tinyvm/privileged_spooler
+
+START_DEAMON_USER (message passing):
+START_DEAMON_CMD (message passing):
+
+PROTECTED_DIRECTORY:/spool

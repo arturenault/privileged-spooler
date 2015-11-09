@@ -1,5 +1,0 @@
-sec-vm56
-tinyvm: 353bb71f6
-user01: 301edaac
-user02: 2672475c
-user03: 4deafe3b
