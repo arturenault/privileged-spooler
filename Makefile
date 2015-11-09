@@ -9,6 +9,8 @@ LDLIBS		= -lboost_system -lboost_filesystem
 SRC_FILES = $(shell find . -type f \( -name "*.cc" -or -name "*.h" \))
 
 build: addqueue showqueue rmqueue
+
+install: build
 	cp addqueue /usr/local/bin
 	cp showqueue /usr/local/bin
 	cp rmqueue /usr/local/bin
