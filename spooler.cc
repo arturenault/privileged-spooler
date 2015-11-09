@@ -4,10 +4,11 @@ using namespace std;
 using namespace boost::filesystem;
 
 int error(const string& message) {
-  if (errno != 0) {
-    cerr << strerror(errno) << ": ";
-  }
   cerr << message << endl;
+  if (errno != 0) {
+    cerr <<  ": " << strerror(errno);
+  }
+  cerr << endl;
   return 1;
 }
 
@@ -34,7 +35,7 @@ int AddFile(int uid, const string& filename) {
   ifstream external_file(filename);
   if (external_file.fail()) {
     external_file.close();
-    return error("File " + filename + " cannot be read");
+    return error(filename);
   }
 
   ofstream internal_file(internal_filename);
@@ -50,7 +51,7 @@ int AddFile(int uid, const string& filename) {
 /* Remove a series of files from the spooler */
 int RmQueue(int uid, const vector<string>& files) {
   if (!exists(path(ROOT_DIR))) {
-    return error("No files in spooler.");
+    return error("Cannot read spooler");
   }
 
   for (auto iter = files.begin(); iter != files.end(); ++iter) {
@@ -67,7 +68,7 @@ int RmFile(int uid, const string& filename) {
   path file_path(internal_filename.str());
 
   if (!remove(file_path)) {
-    return error("File does not exist, or does not belong to given user");
+    return error(filename);
   }
 
   return 0;
