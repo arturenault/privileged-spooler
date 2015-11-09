@@ -3,7 +3,7 @@
 int main(int argc, char** argv) {
   if (argc < 2) {
     stringstream stream;
-    stream << "usage: " << argv[1] << " filename1 filename2 ...";
+    stream << "usage: " << argv[0] << "filename1 filename2 ...";
     return error(stream.str());
   }
 
@@ -14,5 +14,5 @@ int main(int argc, char** argv) {
   /* Build vector with filenames */
   vector<string> files(argv + 1, argv + argc);
 
-  return AddQueue(uid, files);
+  return RmQueue(uid, files);
 }

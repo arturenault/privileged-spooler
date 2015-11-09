@@ -17,8 +17,52 @@ int AddQueue(int uid, const vector<string>& files) {
     mkdir(ROOT_DIR, 700);
   }
 
-  for(auto iter = files.begin(); iter != files.end(); ++iter) {
+  for (auto iter = files.begin(); iter != files.end(); ++iter) {
     AddFile(uid, *iter);
+  }
+
+  return 0;
+}
+
+/* Add a single file by the given user to the spool */
+int AddFile(int uid, const string& filename) {
+  int unique_id = GetUniqueId();
+  string internal_filename = to_string(uid) + "-" + to_string(unique_id);
+
+  ifstream external_file(filename);
+  if (external_file.fail()) {
+    external_file.close();
+    return error("File " + filename + " cannot be read");
+  }
+
+  ofstream internal_file(ROOT_DIR "/" + internal_filename);
+
+  internal_file << external_file.rdbuf();
+
+  return 0;
+}
+
+/* Remove a series of files from the spooler */
+int RmQueue(int uid, const vector<string>& files) {
+  if (!exists(path(ROOT_DIR))) {
+    return error("No files in spooler.");
+  }
+
+  for (auto iter = files.begin(); iter != files.end(); ++iter) {
+    RmFile(uid, *iter);
+  }
+
+  return 0;
+}
+
+int RmFile(int uid, const string& filename) {
+  stringstream internal_filename;
+  internal_filename << ROOT_DIR "/" << uid << "-" << filename;
+
+  path file_path(internal_filename.str());
+
+  if (!remove(file_path)) {
+    return error("File does not exist, or does not belong to given user");
   }
 
   return 0;
@@ -33,7 +77,7 @@ int ShowQueue() {
 
   for (directory_iterator iter(root_dir); iter != end_iter; ++iter) {
     path filepath = iter->path();
-    if(filepath.filename() != UNIQUE_ID_FILE) {
+    if (filepath.filename() != UNIQUE_ID_FILE) {
       stringstream filename(filepath.filename().string());
       string user_id;
       string unique_id;
@@ -46,10 +90,10 @@ int ShowQueue() {
       int pos = last_modified_string.find_last_not_of("\n") + 1;
       last_modified_string.erase(pos);
 
-      cout << filepath.filename().string()  << '\t';
-      cout << user_id                       << '\t';
-      cout << last_modified_string          << '\t';
-      cout << unique_id                     << endl;
+      cout << filepath.filename().string() << '\t';
+      cout << user_id << '\t';
+      cout << last_modified_string << '\t';
+      cout << unique_id << endl;
     }
   }
   return 0;
@@ -57,45 +101,26 @@ int ShowQueue() {
 
 /* Get a unique ID for the next added file to use;
  * Needs to be stored in a file in the spooler directory so it can be kept
- * across executions */ 
+ * across executions */
 int GetUniqueId() {
   ifstream unique_id_infile(ROOT_DIR "/" UNIQUE_ID_FILE, ios::binary);
-  
+
   int last_unique_id, unique_id;
 
   if (unique_id_infile.fail()) {
     last_unique_id = 0;
   } else {
-    unique_id_infile.read(reinterpret_cast<char *>(&last_unique_id), sizeof(last_unique_id)); 
-    cout << "read from file: ";
+    unique_id_infile.read(reinterpret_cast<char*>(&last_unique_id),
+                          sizeof(last_unique_id));
   }
-  cout << last_unique_id << endl;
   unique_id_infile.close();
 
   unique_id = last_unique_id + 1;
 
   ofstream unique_id_outfile(ROOT_DIR "/last_unique_id", ios::binary);
-  unique_id_outfile.write(reinterpret_cast<const char *>(&unique_id), sizeof(unique_id));
+  unique_id_outfile.write(reinterpret_cast<const char*>(&unique_id),
+                          sizeof(unique_id));
   unique_id_outfile.close();
 
   return unique_id;
-}
-
-
-/* Add a single file by the given user to the spool */
-int AddFile(int uid, const string& filename) {
-  int unique_id = GetUniqueId();
-  string internal_filename = to_string(uid) + "-" + to_string(unique_id);
-
-  ifstream external_file(filename);
-  if (external_file.fail()) {
-    external_file.close();
-    return error("File " + filename + " cannot be read");
-  }
-  
-  ofstream internal_file(ROOT_DIR "/" + internal_filename);
-
-  internal_file << external_file.rdbuf();
-
-  return 0;
 }

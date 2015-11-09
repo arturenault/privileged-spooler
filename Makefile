@@ -8,21 +8,17 @@ LDFLAGS		= -g
 LDLIBS		= -lboost_system -lboost_filesystem 
 SRC_FILES = $(shell find . -type f \( -name "*.cc" -or -name "*.h" \))
 
-build: addqueue showqueue
+build: addqueue showqueue rmqueue
 
 addqueue: addqueue.o spooler.o
 
 showqueue: showqueue.o spooler.o
 
-addqueue.o: addqueue.cc spooler.h
-
-shoqueue.o: showqueue.cc spooler.h
-
-spooler.o: spooler.cc spooler.h
+rmqueue: rmqueue.o spooler.o
 
 .PHONY: clean
 clean:
-	rm -f *.o addqueue showqueue
+	rm -f *.o addqueue showqueue rmqueue
 
 .PHONY: format
 format:

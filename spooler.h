@@ -21,13 +21,17 @@ using namespace std;
 
 bool exists(const std::string& filename);
 
-int error(const std::string& message);
+bool error(const std::string& message);
 
-int AddQueue(int uid, const vector<string>& files);
+bool AddQueue(int uid, const vector<string>& files);
 
-int ShowQueue();
+bool ShowQueue();
+
+bool RmQueue(int uid, const vector<string>& files);
 
 int AddFile(int uid, const string& filename);
+
+int RmFile(int uid, const string& filename);
 
 int GetUniqueId();
 
