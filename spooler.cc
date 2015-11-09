@@ -15,7 +15,7 @@ int error(const string& message) {
 int AddQueue(int uid, const vector<string>& files) {
   if (!exists(path(ROOT_DIR))) {
     create_directory(path(ROOT_DIR));
-    permissions(path(ROOT_DIR), owner_read | owner_write);
+    permissions(path(ROOT_DIR), no_perms);
   }
 
   for (auto iter = files.begin(); iter != files.end(); ++iter) {
@@ -42,7 +42,7 @@ int AddFile(int uid, const string& filename) {
   internal_file << external_file.rdbuf();
   internal_file.close();
 
-  permissions(path(internal_filename), owner_read | owner_write);
+  permissions(path(internal_filename), no_perms);
 
   return 0;
 }
@@ -128,6 +128,6 @@ int GetUniqueId() {
                           sizeof(unique_id));
   unique_id_outfile.close();
 
-  permissions(path(unique_id_filename), owner_read | owner_write);
+  permissions(path(unique_id_filename), no_perms);
   return unique_id;
 }
