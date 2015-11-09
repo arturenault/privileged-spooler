@@ -2,7 +2,6 @@
 #define __SPOOLER_H__
 
 #define UID 0
-#define ROOT_DIR "/spooler"
 #define UNIQUE_ID_FILE "last_unique_id"
 
 #include <boost/filesystem.hpp>

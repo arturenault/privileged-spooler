@@ -14,7 +14,8 @@ int error(const string& message) {
 /* Add a series of files to the spooler */
 int AddQueue(int uid, const vector<string>& files) {
   if (!exists(path(ROOT_DIR))) {
-    mkdir(ROOT_DIR, 700);
+    create_directory(path(ROOT_DIR));
+    permissions(path(ROOT_DIR), owner_read | owner_write);
   }
 
   for (auto iter = files.begin(); iter != files.end(); ++iter) {
@@ -27,7 +28,7 @@ int AddQueue(int uid, const vector<string>& files) {
 /* Add a single file by the given user to the spool */
 int AddFile(int uid, const string& filename) {
   int unique_id = GetUniqueId();
-  string internal_filename = to_string(uid) + "-" + to_string(unique_id);
+  string internal_filename = ROOT_DIR "/" + to_string(uid) + "-" + to_string(unique_id);
 
   ifstream external_file(filename);
   if (external_file.fail()) {
@@ -35,9 +36,12 @@ int AddFile(int uid, const string& filename) {
     return error("File " + filename + " cannot be read");
   }
 
-  ofstream internal_file(ROOT_DIR "/" + internal_filename);
+  ofstream internal_file(internal_filename);
 
   internal_file << external_file.rdbuf();
+  internal_file.close();
+
+  permissions(path(internal_filename), owner_read | owner_write);
 
   return 0;
 }
@@ -86,8 +90,8 @@ int ShowQueue() {
       getline(filename, unique_id);
 
       time_t last_modified_time = last_write_time(filepath);
-      string last_modified_string(ctime(&last_modified_time));
-      int pos = last_modified_string.find_last_not_of("\n") + 1;
+	string last_modified_string(ctime(&last_modified_time));
+	int pos = last_modified_string.find_last_not_of("\n") + 1;
       last_modified_string.erase(pos);
 
       cout << filepath.filename().string() << '\t';
@@ -103,7 +107,8 @@ int ShowQueue() {
  * Needs to be stored in a file in the spooler directory so it can be kept
  * across executions */
 int GetUniqueId() {
-  ifstream unique_id_infile(ROOT_DIR "/" UNIQUE_ID_FILE, ios::binary);
+  string unique_id_filename(ROOT_DIR "/" UNIQUE_ID_FILE);
+  ifstream unique_id_infile(unique_id_filename, ios::binary);
 
   int last_unique_id, unique_id;
 
@@ -122,5 +127,6 @@ int GetUniqueId() {
                           sizeof(unique_id));
   unique_id_outfile.close();
 
+  permissions(path(unique_id_filename), owner_read | owner_write);
   return unique_id;
 }
