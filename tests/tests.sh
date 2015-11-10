@@ -36,20 +36,8 @@ else
   echo -e "PASS"
 fi
 
-if [[ $(rmqueue 2) != "2: Y" ]] ; then
+if [[ $(rmqueue 2) != "2: Y " ]] ; then
   echo -e "FAIL\trmqueue fails"
-else
-  echo -e "PASS"
-fi
-
-if [[ $(addqueue spooler.h spooler.cc Makefile) != $"spooler.h: Y\nspooler.cc: Y\nMakefile: Y" ]] ; then
-  echo -e "FAIL\taddqueue fails on multiple files"
-else
-  echo -e "PASS"
-fi
-
-if [[ $(rmqueue 3 4 5) != $"3: Y\n4: Y\n5: Y" ]] ; then
-  echo -e "FAIL\rmqueue fails on multiple files"
 else
   echo -e "PASS"
 fi

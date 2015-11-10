@@ -1,4 +1,6 @@
 README
+Artur Upton Renault
+COMS W4187 hw2
 
 INSTALLATION
 This program uses make to install. Almost all targets need to be run with sudo
@@ -22,6 +24,13 @@ This program uses the Boost Filesystem library. It was installed on the vm using
 apt-get libboost-all-dev, and is therefore not included in the submission.
 
 EXECUTION
+
+make test
+This runs all tests in the tests/ directory. Assumes make build has already been run (does not run build automatically since build requires sudo).
+
+ARG="files" make exec
+Assumes args contains a list of files containing a sequence of commands. Also assumes that make build has already been run.
+
 addqueue <filename1> <filename2> ...
 Adds the files pointed by the filenames to the queue. If one file is not found, the
 other files are still added.
