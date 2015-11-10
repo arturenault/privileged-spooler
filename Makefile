@@ -1,4 +1,4 @@
-.PHONY: default
+.PHONY: default check compile build test exec clean format all
 default: build
 
 CXX			= clang++
@@ -41,15 +41,12 @@ exec:
 		bash $$file ; \
 	done
 
-.PHONY: clean
 clean: check
 	rm -rf *.o addqueue showqueue rmqueue /usr/local/bin/addqueue /usr/local/bin/showqueue /usr/local/bin/rmqueue $(ROOT_DIR)
 
-.PHONY: format
 format:
 	for file in $(SRC_FILES) ; do \
 		clang-format-3.6 --style=Google -i $$file ; \
 	done
 
-.PHONY: all
 all: clean default
