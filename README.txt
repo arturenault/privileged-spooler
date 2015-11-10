@@ -26,7 +26,7 @@ apt-get libboost-all-dev, and is therefore not included in the submission.
 EXECUTION
 
 make test
-This runs all tests in the tests/ directory. Assumes make build has already been run (does not run build automatically since build requires sudo).
+This runs all tests in the tests/ directory, leaving the queue empty afterwards. Assumes make build has already been run (does not run build automatically since build requires sudo).
 
 ARG="files" make exec
 Assumes args contains a list of files containing a sequence of commands. Also assumes that make build has already been run.
