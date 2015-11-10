@@ -3,17 +3,12 @@
 using namespace std;
 using namespace boost::filesystem;
 
-int error(const string& message) {
-  cerr << message << endl;
-  if (errno != 0) {
-    cerr <<  ": " << strerror(errno);
-  }
-  cerr << endl;
-  return 1;
+void log(const string& filename, bool error, const string& message) {
+  cout << filename << ": " << (error ? "X " : "Y ") << message << endl;
 }
 
 /* Add a series of files to the spooler */
-int AddQueue(int uid, const vector<string>& files) {
+void AddQueue(int uid, const vector<string>& files) {
   if (!exists(path(ROOT_DIR))) {
     create_directory(path(ROOT_DIR));
     permissions(path(ROOT_DIR), no_perms);
@@ -22,67 +17,82 @@ int AddQueue(int uid, const vector<string>& files) {
   for (auto iter = files.begin(); iter != files.end(); ++iter) {
     AddFile(uid, *iter);
   }
-
-  return 0;
 }
 
 /* Add a single file by the given user to the spool */
-int AddFile(int uid, const string& filename) {
+void AddFile(int uid, const string& filename) {
   int unique_id = GetUniqueId();
   string internal_filename =
       ROOT_DIR "/" + to_string(uid) + "-" + to_string(unique_id);
 
+  bool error = false;
+  string message;
+
   ifstream external_file(filename);
   if (external_file.fail()) {
     external_file.close();
-    return error(filename);
+    message = "file cannot be opened";
+    error = true;
+  } else {
+    ofstream internal_file(internal_filename);
+
+    internal_file << external_file.rdbuf();
+    internal_file.close();
+
+    permissions(path(internal_filename), no_perms);
   }
 
-  ofstream internal_file(internal_filename);
-
-  internal_file << external_file.rdbuf();
-  internal_file.close();
-
-  permissions(path(internal_filename), no_perms);
-
-  return 0;
+  log(filename, error, message);
 }
 
 /* Remove a series of files from the spooler */
-int RmQueue(int uid, const vector<string>& files) {
-  if (!exists(path(ROOT_DIR))) {
-    return error("Cannot read spooler");
-  }
-
+void RmQueue(int uid, const vector<string>& files) {
   for (auto iter = files.begin(); iter != files.end(); ++iter) {
     RmFile(uid, *iter);
   }
-
-  return 0;
 }
 
-int RmFile(int uid, const string& filename) {
+void RmFile(int uid, const string& filename) {
   stringstream internal_filename;
   internal_filename << ROOT_DIR "/" << uid << "-" << filename;
 
   path file_path(internal_filename.str());
 
+  string message;
+  bool error = false;
+
   if (!remove(file_path)) {
-    return error(filename);
+    message = "file does not exist or does not belong to user";
+    error = true;
   }
 
-  return 0;
+  log(filename, error, message);
 }
 
-int ShowQueue() {
+bool CompareByTime(path lhs, path rhs) {
+  if (difftime(last_write_time(lhs), last_write_time(rhs)) > 0)
+    return false;
+  else
+    return true;
+}
+
+void ShowQueue() {
   path root_dir(ROOT_DIR);
 
-  if (!exists(root_dir)) return 0;
+  if (!exists(root_dir)) return;
 
   directory_iterator end_iter;
 
+  vector<path> paths;
+
   for (directory_iterator iter(root_dir); iter != end_iter; ++iter) {
-    path filepath = iter->path();
+    paths.push_back(iter->path());
+  }
+
+  sort(paths.begin(), paths.end(), &CompareByTime);
+
+  for (auto iter = paths.begin(); iter != paths.end(); ++iter) {
+    path filepath = *iter;
     if (filepath.filename() != UNIQUE_ID_FILE) {
       stringstream filename(filepath.filename().string());
       string user_id;
@@ -91,18 +101,17 @@ int ShowQueue() {
       getline(filename, user_id, '-');
       getline(filename, unique_id);
 
+      char time_buf[17];
       time_t last_modified_time = last_write_time(filepath);
-      string last_modified_string(ctime(&last_modified_time));
-      int pos = last_modified_string.find_last_not_of("\n") + 1;
-      last_modified_string.erase(pos);
+      strftime(time_buf, sizeof(time_buf), "%Y-%m-%d_%H:%M",
+               localtime(&last_modified_time));
 
-      cout << filepath.filename().string() << '\t';
-      cout << user_id << '\t';
-      cout << last_modified_string << '\t';
+      cout << filepath.filename().string() << ' ';
+      cout << user_id << ' ';
+      cout << time_buf << ' ';
       cout << unique_id << endl;
     }
   }
-  return 0;
 }
 
 /* Get a unique ID for the next added file to use;

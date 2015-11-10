@@ -38,7 +38,7 @@ clean: check
 .PHONY: format
 format:
 	for file in $(SRC_FILES) ; do \
-		clang-format --style=Google -i $$file ; \
+		clang-format-3.6 --style=Google -i $$file ; \
 	done
 
 .PHONY: all

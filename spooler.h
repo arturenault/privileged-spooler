@@ -18,17 +18,17 @@
 
 using namespace std;
 
-int error(const std::string& message);
+void log(const string& filename, bool error, const string& message);
 
-int AddQueue(int uid, const vector<string>& files);
+void AddQueue(int uid, const vector<string>& files);
 
-int ShowQueue();
+void ShowQueue();
 
-int RmQueue(int uid, const vector<string>& files);
+void RmQueue(int uid, const vector<string>& files);
 
-int AddFile(int uid, const string& filename);
+void AddFile(int uid, const string& filename);
 
-int RmFile(int uid, const string& filename);
+void RmFile(int uid, const string& filename);
 
 int GetUniqueId();
 
