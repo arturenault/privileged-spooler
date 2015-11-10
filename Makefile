@@ -46,7 +46,7 @@ clean: check
 
 format:
 	for file in $(SRC_FILES) ; do \
-		clang-format-3.6 --style=Google -i $$file ; \
+		clang-format --style=Google -i $$file ; \
 	done
 
 all: clean default
