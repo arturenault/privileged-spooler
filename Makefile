@@ -31,6 +31,16 @@ showqueue: showqueue.o spooler.o
 
 rmqueue: rmqueue.o spooler.o
 
+test: 
+	for file in test/* ; do \
+		bash $$file ; \
+	done
+
+exec:
+	for file in $(ARG) ; do \
+		bash $$file ; \
+	done
+
 .PHONY: clean
 clean: check
 	rm -rf *.o addqueue showqueue rmqueue /usr/local/bin/addqueue /usr/local/bin/showqueue /usr/local/bin/rmqueue $(ROOT_DIR)
