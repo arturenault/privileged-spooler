@@ -6,17 +6,17 @@ INSTALLATION
 This program uses make to install. Almost all targets need to be run with sudo
 to function properly.
 
-make compile
+make compile (requires sudo)
 Compiles the program and creates three executables (addqueue, showqueue, and
 rmqueue).
 
-make build (default)
+make build (default) (requires sudo)
 runs make compile, and then moves executables to PATH.
 
-make clean
+make clean (requires sudo)
 removes object files and executables
 
-make all
+make all (requires sudo)
 runs clean followed by build
 
 LIBRARIES
@@ -33,12 +33,12 @@ Assumes args contains a list of files containing a sequence of commands. Also as
 
 addqueue <filename1> <filename2> ...
 Adds the files pointed by the filenames to the queue. If one file is not found, the
-other files are still added.
+other files are still added. Outputs in the specified format.
 
 rmqueue <unique_id1> <unique_id2> ...
 Removes the files pointed to by the filenames to the queue. Will not remove
 files that don't belong to the user. If one file fails, the others will still be
-removed.
+removed. Outputs in the specified format.
 
 showqueue
 Prints the contents of the queue in the following format:
