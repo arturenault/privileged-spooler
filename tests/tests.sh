@@ -7,7 +7,7 @@ else
 fi
 
 if [[ $(addqueue non-existent-file) != "non-existent-file: X file cannot be opened" ]] ; then
-  echo -e "FAIL\tshowqueue should retun nothing on first execution"
+  echo -e "FAIL\taddqueue should not add non-existent files"
 else
   echo -e "PASS"
 fi
@@ -36,7 +36,7 @@ else
   echo -e "PASS"
 fi
 
-if [[ $(rmqueue 2) != "2: Y " ]] ; then
+if [[ $(rmqueue 1) != "1: Y " ]] ; then
   echo -e "FAIL\trmqueue fails"
 else
   echo -e "PASS"

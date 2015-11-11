@@ -21,10 +21,6 @@ void AddQueue(int uid, const vector<string>& files) {
 
 /* Add a single file by the given user to the spool */
 void AddFile(int uid, const string& filename) {
-  long unique_id = GetUniqueId();
-  string internal_filename =
-      ROOT_DIR "/" + to_string(uid) + "-" + to_string(unique_id);
-
   bool error = false;
   string message;
 
@@ -37,6 +33,9 @@ void AddFile(int uid, const string& filename) {
     setuid(0);
   } else {
     setuid(0);
+    long unique_id = GetUniqueId();
+    string internal_filename =
+      ROOT_DIR "/" + to_string(uid) + "-" + to_string(unique_id);
     ofstream internal_file(internal_filename);
 
     internal_file << external_file.rdbuf();

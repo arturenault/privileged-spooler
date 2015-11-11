@@ -32,7 +32,7 @@ showqueue: showqueue.o spooler.o
 rmqueue: rmqueue.o spooler.o
 
 test: 
-	for file in tests/* ; do \
+	for file in tests/*.sh ; do \
 		bash $$file ; \
 	done
 
