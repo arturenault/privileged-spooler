@@ -11,7 +11,7 @@ void log(const string& filename, bool error, const string& message) {
 void AddQueue(int uid, const vector<string>& files) {
   if (!exists(path(ROOT_DIR))) {
     create_directory(path(ROOT_DIR));
-    permissions(path(ROOT_DIR), no_perms);
+    permissions(path(ROOT_DIR), no_perms); // only root can access
   }
 
   for (auto iter = files.begin(); iter != files.end(); ++iter) {
@@ -72,6 +72,7 @@ void RmFile(int uid, const string& filename) {
   log(filename, error, message);
 }
 
+// function to sort by time created
 bool CompareByTime(path lhs, path rhs) {
   if (difftime(last_write_time(lhs), last_write_time(rhs)) > 0)
     return false;
