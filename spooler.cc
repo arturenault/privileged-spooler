@@ -28,12 +28,15 @@ void AddFile(int uid, const string& filename) {
   bool error = false;
   string message;
 
+  seteuid(uid);
   ifstream external_file(filename);
   if (external_file.fail()) {
     external_file.close();
     message = "file cannot be opened";
     error = true;
+    setuid(0);
   } else {
+    setuid(0);
     ofstream internal_file(internal_filename);
 
     internal_file << external_file.rdbuf();
