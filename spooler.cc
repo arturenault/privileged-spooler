@@ -21,7 +21,7 @@ void AddQueue(int uid, const vector<string>& files) {
 
 /* Add a single file by the given user to the spool */
 void AddFile(int uid, const string& filename) {
-  int unique_id = GetUniqueId();
+  long unique_id = GetUniqueId();
   string internal_filename =
       ROOT_DIR "/" + to_string(uid) + "-" + to_string(unique_id);
 
@@ -120,11 +120,11 @@ void ShowQueue() {
 /* Get a unique ID for the next added file to use;
  * Needs to be stored in a file in the spooler directory so it can be kept
  * across executions */
-int GetUniqueId() {
+long GetUniqueId() {
   string unique_id_filename(ROOT_DIR "/" UNIQUE_ID_FILE);
   ifstream unique_id_infile(unique_id_filename, ios::binary);
 
-  int last_unique_id, unique_id;
+  long last_unique_id, unique_id;
 
   if (unique_id_infile.fail()) {
     last_unique_id = 0;

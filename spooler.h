@@ -30,6 +30,6 @@ void AddFile(int uid, const string& filename);
 
 void RmFile(int uid, const string& filename);
 
-int GetUniqueId();
+long GetUniqueId();
 
 #endif
